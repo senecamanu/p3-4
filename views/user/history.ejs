@@ -1,0 +1,110 @@
+<% include ../partials/headerUser.ejs %>
+
+<div class="container mx-auto mt-4 pb-">
+  <div class="container">
+    <h1 class="display-1">Transaction History,
+      <%= name %>
+    </h1>
+  </div>
+
+  <hr class="my-5">
+  <% if (err !== null) { %>
+  <%- include('../partials/errorAlert.ejs', {err: err}) %>
+  <% } %>
+
+    <!-- chart js -->
+    <div class="container">
+      <canvas id="myChart" width=auto height="200px"></canvas>
+      <script>
+        
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [
+              <% for (let i in labels) { %>
+              "<%= labels[i] %>",
+              <% } %>
+          ],
+            datasets: [{
+              label: 'Nominal Bought',
+              // data: [12, 19, 3, 5, 2, 3],
+              data: [<%= datasetData %>],
+              // backgroundColor: [
+              //   'rgba(255, 99, 132, 0.2)',
+              //   'rgba(54, 162, 235, 0.2)',
+              //   'rgba(255, 206, 86, 0.2)',
+              //   'rgba(75, 192, 192, 0.2)',
+              //   'rgba(153, 102, 255, 0.2)',
+              //   'rgba(255, 159, 64, 0.2)'
+              // ],
+              backgroundColor: ["<%= datasetBG[0] %>"],
+              // borderColor: [
+              //   'rgba(255,99,132,1)',
+              //   'rgba(54, 162, 235, 1)',
+              //   'rgba(255, 206, 86, 1)',
+              //   'rgba(75, 192, 192, 1)',
+              //   'rgba(153, 102, 255, 1)',
+              //   'rgba(255, 159, 64, 1)'
+              // ],
+              borderColor: ["<%= datasetBorder[0] %>"],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }
+        });
+      </script>
+    
+    </div>
+
+  <hr class="my-5">
+
+
+  <div class="container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Nominal</th>
+          <th scope="col">Paid</th>
+          <th scope="col">Transaction Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let i in data.Products) { %>
+        <tr>
+          <!-- ID -->
+          <td scope="row">
+            <%= data.Products[i].id %>
+          </td>
+          <!-- Nominal -->
+          <td>
+            <%= currency(data.Products[i].nominal) %>
+          </td>
+          <!-- Amount Paid -->
+          <td>
+            <%= currency(data.Products[i].sellPrice) %>
+          </td>
+          <!-- Transaction Date -->
+          <td>
+            <%= getDate(data.Products[i].Transactions.date) %>
+          </td>
+          </tr>
+    
+    
+        <% } %>
+    
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<% include ../partials/footer.ejs %>
